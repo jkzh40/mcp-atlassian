@@ -32,6 +32,34 @@ CONFLUENCE_USERNAME=your.email@company.com
 CONFLUENCE_API_TOKEN=your_api_token
 ```
 
+### macOS Keychain (this fork)
+
+On macOS, shared Keychain items take precedence over the environment variables
+above. Each item uses your local login name as its account:
+
+| Keychain service name | Configuration |
+| --- | --- |
+| `ATLASSIAN_SITE_URL` | Jira base URL; Confluence uses this URL plus `/wiki` |
+| `ATLASSIAN_EMAIL` | Jira and Confluence username |
+| `ATLASSIAN_API_TOKEN` | Jira and Confluence API token |
+
+Store the site root (without `/wiki`) in `ATLASSIAN_SITE_URL`. The server reads
+these items directly through Python `keyring`; it does not export them into the
+process environment. Allow Keychain access for the Python process when prompted.
+Remove obsolete credential interpolation entries from your MCP launcher's `env`
+configuration when using Keychain-only credentials.
+
+An absent item or unavailable backend falls back to the corresponding
+`JIRA_*` or `CONFLUENCE_*` environment variable. Other platforms retain
+environment-based configuration. Locked or denied Keychain access is an error,
+not a reason to switch credentials. To use a different environment value, first
+update or remove the corresponding Keychain item. Shared items apply to both
+services; use environment-only configuration for different service accounts or
+nonstandard Confluence URLs.
+
+OAuth, PAT, and client-certificate settings are unchanged, including OAuth's
+existing on-disk token backup.
+
 ## Personal Access Token (Server/Data Center)
 
 For Server or Data Center deployments.

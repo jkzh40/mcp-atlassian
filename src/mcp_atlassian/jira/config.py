@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Literal
 
+from ..utils.credentials import get_service_credential
 from ..utils.env import (
     get_custom_headers,
     get_header_names,
@@ -240,7 +241,7 @@ class JiraConfig:
         Raises:
             ValueError: If required environment variables are missing or invalid
         """
-        url = os.getenv("JIRA_URL")
+        url = get_service_credential("JIRA_URL")
         if (
             not url
             and not os.getenv("ATLASSIAN_OAUTH_ENABLE")
@@ -254,8 +255,8 @@ class JiraConfig:
             raise ValueError(error_msg)
 
         # Determine authentication type based on available environment variables
-        username = os.getenv("JIRA_USERNAME")
-        api_token = os.getenv("JIRA_API_TOKEN")
+        username = get_service_credential("JIRA_USERNAME")
+        api_token = get_service_credential("JIRA_API_TOKEN")
         personal_token = os.getenv("JIRA_PERSONAL_TOKEN")
         client_cert_env = os.getenv("JIRA_CLIENT_CERT")
 

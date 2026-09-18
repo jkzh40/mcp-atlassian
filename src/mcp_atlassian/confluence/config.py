@@ -5,6 +5,7 @@ import os
 from dataclasses import dataclass
 from typing import Literal
 
+from ..utils.credentials import get_service_credential
 from ..utils.env import (
     get_custom_headers,
     get_header_names,
@@ -108,7 +109,7 @@ class ConfluenceConfig:
         Raises:
             ValueError: If any required environment variable is missing
         """
-        url = os.getenv("CONFLUENCE_URL")
+        url = get_service_credential("CONFLUENCE_URL")
         if (
             not url
             and not os.getenv("ATLASSIAN_OAUTH_ENABLE")
@@ -122,8 +123,8 @@ class ConfluenceConfig:
             raise ValueError(error_msg)
 
         # Determine authentication type based on available environment variables
-        username = os.getenv("CONFLUENCE_USERNAME")
-        api_token = os.getenv("CONFLUENCE_API_TOKEN")
+        username = get_service_credential("CONFLUENCE_USERNAME")
+        api_token = get_service_credential("CONFLUENCE_API_TOKEN")
         personal_token = os.getenv("CONFLUENCE_PERSONAL_TOKEN")
         client_cert_env = os.getenv("CONFLUENCE_CLIENT_CERT")
 

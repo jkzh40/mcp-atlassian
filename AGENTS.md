@@ -25,7 +25,7 @@
 - **Mixin composition**: `JiraFetcher` composes 21 mixins, `ConfluenceFetcher` composes 8. Client inheritance is transitive through mixins.
 - **FastMCP servers**: `servers/main.py` → lifespan → dependency injection via `get_jira_fetcher(ctx)` / `get_confluence_fetcher(ctx)`.
 - **Tool naming**: `{service}_{action}_{target}` (e.g., `jira_create_issue`, `confluence_get_page`).
-- **Config**: Environment-based `from_env()` factory on `JiraConfig` / `ConfluenceConfig` dataclasses.
+- **Config**: `from_env()` factories on `JiraConfig` / `ConfluenceConfig` dataclasses. Shared URL/Basic credentials resolve through `utils/credentials.py`: macOS Keychain first, service environment fallback. Availability checks use the same resolver. OAuth/PAT/mTLS remain environment-configured.
 - **Auth**: Basic (Cloud + Server/DC), PAT (Server/DC), OAuth 2.0 (Cloud + Server/DC) — with multi-tenant header support.
 - **Models**: All extend `ApiModel` → `from_api_response()` + `to_simplified_dict()`.
 

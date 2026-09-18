@@ -3,6 +3,7 @@
 import logging
 import os
 
+from .credentials import get_service_credential
 from .env import is_env_truthy
 from .urls import is_atlassian_cloud_url
 
@@ -73,11 +74,13 @@ def _check_service_auth(
         return True
 
     if is_cloud:  # Cloud non-OAuth
-        if os.getenv(username_env) and os.getenv(api_env):
+        if get_service_credential(username_env) and get_service_credential(api_env):
             logger.info("Using %s Cloud Basic Authentication (API Token)", service_name)
             return True
     else:  # Server/Data Center non-OAuth
-        if os.getenv(pat_env) or (os.getenv(username_env) and os.getenv(api_env)):
+        if os.getenv(pat_env) or (
+            get_service_credential(username_env) and get_service_credential(api_env)
+        ):
             logger.info(
                 "Using %s Server/Data Center authentication (PAT or Basic Auth)",
                 service_name,
@@ -96,7 +99,7 @@ def get_available_services(
     """Determine which services are available based on environment variables and optional headers."""
     headers = headers or {}
 
-    confluence_url = os.getenv("CONFLUENCE_URL")
+    confluence_url = get_service_credential("CONFLUENCE_URL")
     confluence_is_setup = False
     if confluence_url:
         confluence_is_setup = _check_service_auth(
@@ -143,7 +146,7 @@ def get_available_services(
             confluence_is_setup = True
             logger.info("Using Confluence authentication from header personal token")
 
-    jira_url = os.getenv("JIRA_URL")
+    jira_url = get_service_credential("JIRA_URL")
     jira_is_setup = False
     if jira_url:
         jira_is_setup = _check_service_auth(

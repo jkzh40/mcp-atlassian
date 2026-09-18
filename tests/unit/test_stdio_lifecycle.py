@@ -28,6 +28,8 @@ def test_stdio_homebrew_probe_exits_after_stdin_close() -> None:
             "JIRA_URL": "https://example.atlassian.net",
             "JIRA_USERNAME": "user@example.com",
             "JIRA_API_TOKEN": "x",
+            # Subprocesses do not inherit the unit fixture's Keychain mock.
+            "PYTHON_KEYRING_BACKEND": "keyring.backends.null.Keyring",
         }
     )
 
